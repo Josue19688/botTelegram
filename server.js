@@ -1,13 +1,7 @@
 
+const Server =  require('./models/server');
 
-const express = require('express');
-const { botTelegram } = require('./bot');
+const server = new Server();
 
 
-const app = express();
-
-botTelegram();
-
-app.listen(3000,()=>{
-    console.log('Servidor Corriendo en el puerto',3000);
-})
+server.listen();

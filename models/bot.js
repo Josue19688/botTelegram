@@ -44,7 +44,7 @@ const botTelegram = async()=>{
  bot.onText(/^\/asistencia/,function(msg){
     var chatId=msg.chat.id;
 
-    const leerAsistencia = fs.readFileSync('asistencia.json','utf-8');
+    const leerAsistencia = fs.readFileSync('./data/asistencia.json','utf-8');
     let asistencia = Array.from(JSON.parse(leerAsistencia));
 
     
@@ -85,7 +85,7 @@ const botTelegram = async()=>{
 
         asistencia.push(nuevo);
         const json_asistencia = JSON.stringify(asistencia);
-        fs.writeFileSync('asistencia.json',json_asistencia,'utf-8');
+        fs.writeFileSync('./data/asistencia.json',json_asistencia,'utf-8');
 
 
             bot.answerCallbackQuery(accionboton.id, {text: 'Asistencia agregada correctamente', show_alert: true});
@@ -105,7 +105,7 @@ const botTelegram = async()=>{
     var chatId=msg.chat.id;
     
 
-    const leerAsistencia = fs.readFileSync('asistencia.json','utf-8');
+    const leerAsistencia = fs.readFileSync('./data/asistencia.json','utf-8');
     let asistencia = Array.from(JSON.parse(leerAsistencia));
 
     const nuevoArreglo = asistencia.map(function(item){
