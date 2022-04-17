@@ -1,7 +1,8 @@
 process.env.NTBA_FIX_319 = 1;
 const TelegramBot = require('node-telegram-bot-api');
 const fs = require('fs');
-
+const https = require('https');
+const download = require('download');
 
 
 const botTelegram = async()=>{
@@ -121,7 +122,49 @@ const botTelegram = async()=>{
 });
 
 
+bot.onText(/^\hola/,function(msg){
+    console.log(msg);
+})
 
+
+/**
+ * NECESITO CREAR UN METODO PARA TRAER UNA IMAGEN DESDE EL GRUPO DE TELEGRAM
+ */
+
+ bot.on('message', (msg) => {
+    
+    if(msg.photo){
+        let foto = msg.photo[2].file_id;
+        const url=`https://api.telegram.org/bot5351040426:AAFGM1YN-SfAuQcgBMsz_tdrA-6p8OYQUuI/getFile?file_id=${foto}`;
+        https.get(url, res => {
+            let data = '';
+            res.on('data', chunk => {
+              data += chunk;
+            });
+            res.on('end', () => {
+              data = JSON.parse(data);
+              let pathFoto = data.result.file_path;
+              const urlPath = `https://api.telegram.org/file/bot5351040426:AAFGM1YN-SfAuQcgBMsz_tdrA-6p8OYQUuI/${pathFoto}`;
+                /**
+                 * Agregamos la libreria downloads con npm install downloads para hacer la descarga de la imagen de telegram
+                 */
+              const filePath=`${__dirname}/downloads`;
+              download(urlPath,filePath)
+                .then(()=>{
+                    console.log("Descarga Completa");
+                })
+    
+            
+            })
+        }).on('error', err => {
+            console.log(err.message);
+        })
+        
+        
+    }
+  
+
+});
     
 }
 

@@ -10,8 +10,10 @@
   "author": "Josue vasquez",
   "license": "ISC",
   "dependencies": {
+    "download": "^8.0.0",
     "express": "^4.17.3",
     "mysql": "github:mysqljs/mysql",
+    "node-fetch": "^3.2.3",
     "node-telegram-bot-api": "^0.56.0",
     "telegraf": "^4.7.0"
   }
