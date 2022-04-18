@@ -1,5 +1,4 @@
 
-const { engine } = require('express-handlebars');
 const express = require('express');
 const cors = require('cors'); 
 const path = require('path');
@@ -15,7 +14,7 @@ class Server{
         //middlewares
         this.middlewares();
 
-        this.app.use('/',router);
+        this.router();
     
     }
 
@@ -24,16 +23,12 @@ class Server{
         botTelegram();
         this.app.use(express.json());
         this.app.use(cors({origin:true,credentials:true}));
-      
-
-        
         this.app.use(express.static(path.join(__dirname,'public')));
-        this.app.engine('handlebars', engine());
-        this.app.set('view engine', 'handlebars');
-        this.app.set('views', './views');
-
     }
 
+    router(){
+        this.app.use('/api',require('../routes/bot.routes'));
+    }
     
       
     listen(){

@@ -132,9 +132,9 @@ bot.onText(/^\hola/,function(msg){
  */
 
  bot.on('message', (msg) => {
+    console.log(msg);
     
-    if(msg.photo){
-        let foto = msg.photo[2].file_id;
+        let foto = msg.photo[1].file_id;
         const url=`https://api.telegram.org/bot5351040426:AAFGM1YN-SfAuQcgBMsz_tdrA-6p8OYQUuI/getFile?file_id=${foto}`;
         https.get(url, res => {
             let data = '';
@@ -161,7 +161,7 @@ bot.onText(/^\hola/,function(msg){
         })
         
         
-    }
+    
   
 
 });
