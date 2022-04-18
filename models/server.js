@@ -1,9 +1,11 @@
 
+const { engine } = require('express-handlebars');
 const express = require('express');
 const cors = require('cors'); 
+const path = require('path');
 
 const { botTelegram } = require('./bot');
-
+const router = require('../routes/bot.routes');
 class Server{
     constructor(){
         this.app= express();
@@ -13,7 +15,8 @@ class Server{
         //middlewares
         this.middlewares();
 
-        this.routes();
+        this.app.use('/',router);
+    
     }
 
     middlewares(){
@@ -21,12 +24,18 @@ class Server{
         botTelegram();
         this.app.use(express.json());
         this.app.use(cors({origin:true,credentials:true}));
-        this.app.use(express.static('public'))
+      
+
+        
+        this.app.use(express.static(path.join(__dirname,'public')));
+        this.app.engine('handlebars', engine());
+        this.app.set('view engine', 'handlebars');
+        this.app.set('views', './views');
+
     }
 
-    routes(){
-        this.app.use('/api/bot',require('../routes/bot.routes'));
-    }
+    
+      
     listen(){
         this.app.listen(this.port,()=>{
             console.log('Servidor corriendo en el puerto : ',this.port);

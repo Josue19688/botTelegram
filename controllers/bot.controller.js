@@ -1,16 +1,16 @@
 
-const {response, request}= require('express');
-const fs = require('fs');
 
 
-const asistencia = async(req=request, res=response)=>{
+const asistencia = async(req, res)=>{
 
-    const leerAsistencia = fs.readFileSync('./data/asistencia.json','utf-8');
-    let asistencia = Array.from(JSON.parse(leerAsistencia));
+    // const leerAsistencia = fs.readFileSync('./data/asistencia.json','utf-8');
+    // let asistencia = Array.from(JSON.parse(leerAsistencia));
 
-    res.json({
-        ok:true,
-       asistencia
+    res.render('home',{
+        nombrePagina:'Bot Telegram',
+        tagline:'Registro de Asistencia',
+        barra:true,
+        boton:true
     });
 }
 
