@@ -4,7 +4,8 @@ const cors = require('cors');
 const path = require('path');
 
 const { botTelegram } = require('./bot');
-const router = require('../routes/bot.routes');
+const db = require('../config/db');
+require('../models/asistencia');
 class Server{
     constructor(){
         this.app= express();
@@ -21,6 +22,9 @@ class Server{
     middlewares(){
         
         botTelegram();
+        db.sync()
+            .then(()=>console.log('Conectado a la db'))
+            .catch(error=>console.log(error));
         this.app.use(express.json());
         this.app.use(cors({origin:true,credentials:true}));
         this.app.use(express.static(path.join(__dirname,'public')));

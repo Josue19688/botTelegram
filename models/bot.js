@@ -4,6 +4,8 @@ const fs = require('fs');
 const https = require('https');
 const download = require('download');
 
+const Asistencias = require('../models/asistencia');
+
 
 const botTelegram = async()=>{
     const token = '5351040426:AAFGM1YN-SfAuQcgBMsz_tdrA-6p8OYQUuI';
@@ -67,21 +69,25 @@ const botTelegram = async()=>{
        
         
 
-        let fecha = accionboton.message.date;
-        var dt = new Date(fecha*1000); 
-        var nuevaFecha = dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds() + ' -- ' + dt;
+        let fecha = new Date();
+        
         if(data=='boton1'){
-            
-        const myId = accionboton.from.id;
-        const nombre = accionboton.from.first_name;
-        const alias = accionboton.from.username;
+        
+        
+        let myId = accionboton.from.id;
+        const codigo = myId;
+        let nombre = accionboton.from.first_name;
+        let alias = accionboton.from.username;
         let nuevo ={
              myId,
              nombre,
              alias,
-             nuevaFecha
+             fecha
         };
 
+        Asistencias.create({codigo,nombre,alias,fecha})
+            .then(()=>console.log('Insertado Correctamente!!'))
+            .catch(error=>console.log(error));
 
         asistencia.push(nuevo);
         const json_asistencia = JSON.stringify(asistencia);
@@ -132,7 +138,9 @@ bot.onText(/^\hola/,function(msg){
  */
 
  bot.on('message', (msg) => {
-    console.log(msg);
+    
+    if(msg.photo){
+
     
         let foto = msg.photo[1].file_id;
         const url=`https://api.telegram.org/bot5351040426:AAFGM1YN-SfAuQcgBMsz_tdrA-6p8OYQUuI/getFile?file_id=${foto}`;
@@ -160,7 +168,7 @@ bot.onText(/^\hola/,function(msg){
             console.log(err.message);
         })
         
-        
+    }   
     
   
 
