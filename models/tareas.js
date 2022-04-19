@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 const db = require('../config/db');
 
 
-const Asistencias = db.define('asistencia',{
+const Tareas = db.define('tarea',{
     id:{
         type:Sequelize.INTEGER,
         primaryKey:true,
@@ -17,9 +17,12 @@ const Asistencias = db.define('asistencia',{
     alias:{
         type:Sequelize.STRING
     },
-    fecha:{
-        type:Sequelize.DATEONLY
+    mensaje:{
+        type:Sequelize.STRING
+    },
+    ruta:{
+        type:Sequelize.STRING
     }
 });
 
-module.exports=Asistencias;
+module.exports=Tareas;

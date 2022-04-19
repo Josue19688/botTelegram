@@ -6,6 +6,7 @@ const path = require('path');
 const { botTelegram } = require('./bot');
 const db = require('../config/db');
 require('../models/asistencia');
+require('../models/tareas');
 class Server{
     constructor(){
         this.app= express();

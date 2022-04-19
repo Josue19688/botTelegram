@@ -5,6 +5,7 @@ const https = require('https');
 const download = require('download');
 
 const Asistencias = require('../models/asistencia');
+const Tareas =  require('../models/tareas');
 
 
 const botTelegram = async()=>{
@@ -46,8 +47,8 @@ const botTelegram = async()=>{
  bot.onText(/^\/asistencia/,function(msg){
     var chatId=msg.chat.id;
 
-    const leerAsistencia = fs.readFileSync('./data/asistencia.json','utf-8');
-    let asistencia = Array.from(JSON.parse(leerAsistencia));
+    // const leerAsistencia = fs.readFileSync('./data/asistencia.json','utf-8');
+    // let asistencia = Array.from(JSON.parse(leerAsistencia));
 
     
     var botones = {
@@ -89,9 +90,9 @@ const botTelegram = async()=>{
             .then(()=>console.log('Insertado Correctamente!!'))
             .catch(error=>console.log(error));
 
-        asistencia.push(nuevo);
-        const json_asistencia = JSON.stringify(asistencia);
-        fs.writeFileSync('./data/asistencia.json',json_asistencia,'utf-8');
+        // asistencia.push(nuevo);
+        // const json_asistencia = JSON.stringify(asistencia);
+        // fs.writeFileSync('./data/asistencia.json',json_asistencia,'utf-8');
 
 
             bot.answerCallbackQuery(accionboton.id, {text: 'Asistencia agregada correctamente', show_alert: true});
@@ -106,31 +107,39 @@ const botTelegram = async()=>{
  * HAREMOS UN METODO PARA SABER QUE USUARIOS HAN REGISTRADO SU ASISTENCIA
  */
 
- bot.onText(/^\/myasistencia/,function(msg){
+ bot.onText(/^\/myasistencia/,async(msg)=>{
 
     var chatId=msg.chat.id;
+    var myId = msg.from.id;
+
     
-
-    const leerAsistencia = fs.readFileSync('./data/asistencia.json','utf-8');
-    let asistencia = Array.from(JSON.parse(leerAsistencia));
-
-    const nuevoArreglo = asistencia.map(function(item){
-        const id = msg.from.id;
-      
-        if(item.myId===id){
-            const fecha = item.nuevaFecha.toString();
-            return `<b>ID</b>: <i>${item.myId}</i> \n <b>NOMBRE</b><i> ${item.nombre}</i> \n <b>ALIAS</b> : <i>${item.alias}</i> \n <b>FECHA </b>: <i>${fecha}</i> \n\n`;
+    const conteo =await Asistencias.findAll({
+        where:{
+            codigo:2027940527
         }
+    });
+
+   
+    console.log(conteo);
+
+    
+    // const nuevoArreglo = asistencia.map(function(item){
+    //     const id = msg.from.id;
+      
+    //     if(item.myId===id){
+    //         const fecha = item.nuevaFecha.toString();
+    //         return `<b>ID</b>: <i>${item.myId}</i> \n <b>NOMBRE</b><i> ${item.nombre}</i> \n <b>ALIAS</b> : <i>${item.alias}</i> \n <b>FECHA </b>: <i>${fecha}</i> \n\n`;
+    //     }
         
-    })
-    bot.sendMessage(chatId,nuevoArreglo.toString(),{parse_mode : "HTML"});
+    // })
+    // bot.sendMessage(chatId,nuevoArreglo.toString(),{parse_mode : "HTML"});
 
 });
 
 
-bot.onText(/^\hola/,function(msg){
-    console.log(msg);
-})
+// bot.onText(/^\hola/,function(msg){
+//     console.log(msg);
+// })
 
 
 /**
@@ -138,9 +147,13 @@ bot.onText(/^\hola/,function(msg){
  */
 
  bot.on('message', (msg) => {
-    
+    //console.log(msg);
     if(msg.photo){
 
+       const codigo = msg.from.id;
+       const nombre = msg.from.first_name;
+       const alias = msg.from.username;
+       const mensaje = msg.caption;
     
         let foto = msg.photo[1].file_id;
         const url=`https://api.telegram.org/bot5351040426:AAFGM1YN-SfAuQcgBMsz_tdrA-6p8OYQUuI/getFile?file_id=${foto}`;
@@ -153,15 +166,31 @@ bot.onText(/^\hola/,function(msg){
               data = JSON.parse(data);
               let pathFoto = data.result.file_path;
               const urlPath = `https://api.telegram.org/file/bot5351040426:AAFGM1YN-SfAuQcgBMsz_tdrA-6p8OYQUuI/${pathFoto}`;
+
+           
+
+
                 /**
                  * Agregamos la libreria downloads con npm install downloads para hacer la descarga de la imagen de telegram
                  */
               const filePath=`${__dirname}/downloads`;
+
+
+
               download(urlPath,filePath)
                 .then(()=>{
                     console.log("Descarga Completa");
                 })
-    
+                
+
+                const filePath56=`${pathFoto}`;
+                const ruta = filePath56;
+               
+
+                Tareas.create({codigo,nombre,alias,mensaje,ruta})
+                    .then(()=>console.log('Insertado Correctamente!!'))
+                    .catch(error=>console.log(error));
+
             
             })
         }).on('error', err => {
