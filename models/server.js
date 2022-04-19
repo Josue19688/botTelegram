@@ -28,6 +28,7 @@ class Server{
 
     router(){
         this.app.use('/api',require('../routes/bot.routes'));
+        this.app.use('/api/usuario',require('../routes/usuario.routes'));
     }
     
       
