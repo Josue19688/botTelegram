@@ -1,2 +1,3 @@
 node_modules/
-/data
+data/asistencia.json
+data/usuarios.json
