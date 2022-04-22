@@ -3,9 +3,15 @@ const TelegramBot = require('node-telegram-bot-api');
 const fs = require('fs');
 const https = require('https');
 const download = require('download');
+const {sequelize} = require('sequelize');
+const { Op } = require('sequelize');
+const Moment = require('moment');
 
-const Asistencias = require('../models/asistencia');
-const Tareas =  require('../models/tareas');
+
+//const Asistencias = require('../models/asistencia');
+//const Tareas =  require('../models/tareas');
+//const Extenciones =  require('../models/solicitdes');
+const Finalizadas = require('../models/asignadas');
 
 
 const botTelegram = async()=>{
@@ -18,7 +24,7 @@ const botTelegram = async()=>{
         var chatId = msg.chat.id;
         var nameUser = msg.from.first_name;
         var alias = msg.from.username;
-        console.log(msg);
+        
         bot.sendMessage(chatId, "Bienvenido a mi bot \n" + nameUser+"\n "+alias+"\n COMANDOS :\n  /asistencia \n /myasistencia ");
     });
 
@@ -26,182 +32,75 @@ const botTelegram = async()=>{
         console.log(error);
     });
 
-    bot.onText(/^\/chatid/, (msg) => {
-        const chatId = msg.chat.id;//aqui tenemos el id del chat que nos devuelve el bot
-        bot.sendMessage(chatId, "El id de este chat es: " + chatId);  
-    });
-    
-    bot.onText(/^\/myid/, (msg) => {
-        const chatId = msg.chat.id;
-        const myId = msg.from.id;
-        bot.sendMessage(chatId, "Tu id es: " + myId);  
-    });
+   
 
 
+
+
+ 
 /**
- * CON ESTE METODO CAPTURAMOS LA ASISTENCIA DE LOS PARTICIPANTES DONDE TRAEREMOS EL ID DE TELEGRAM,
- * NOMBRE DE USUARIO, ALIAS Y FECHA CUANDO DA CLICK EN EL BOTON QUE SE LE MUESTRA EN EL CHAT
+ * 
+ * CREAR UN METODO PARA TRAER TODAS LAS SOLICITUDES DEL DIA TERMINADAS Y CREADAS
+ * 
  */
 
+    bot.onText(/^\/finalizadas/,async(msg)=>{
 
- bot.onText(/^\/asistencia/,function(msg){
-    var chatId=msg.chat.id;
-
-    // const leerAsistencia = fs.readFileSync('./data/asistencia.json','utf-8');
-    // let asistencia = Array.from(JSON.parse(leerAsistencia));
-
-    
-    var botones = {
-        reply_markup:{
-            inline_keyboard:[
-                [
-                    {text:"Asistencia",callback_data:'boton1'}
-                    
-                ]
-            ]
-        }
-    };
-
-    bot.sendMessage(chatId,"Marcar asistencia",botones);
-
-   
-    bot.on('callback_query',function onCallbackQuery(accionboton){
-        const data = accionboton.data;
-       
-        
-
-        let fecha = new Date();
-        
-        if(data=='boton1'){
-        
-        
-        let myId = accionboton.from.id;
-        const codigo = myId;
-        let nombre = accionboton.from.first_name;
-        let alias = accionboton.from.username;
-        let nuevo ={
-             myId,
-             nombre,
-             alias,
-             fecha
-        };
-
-        Asistencias.create({codigo,nombre,alias,fecha})
-            .then(()=>console.log('Insertado Correctamente!!'))
-            .catch(error=>console.log(error));
-
-        // asistencia.push(nuevo);
-        // const json_asistencia = JSON.stringify(asistencia);
-        // fs.writeFileSync('./data/asistencia.json',json_asistencia,'utf-8');
-
-
-            bot.answerCallbackQuery(accionboton.id, {text: 'Asistencia agregada correctamente', show_alert: true});
-        }
-       
-    })
-})
-
-
-
-/**
- * HAREMOS UN METODO PARA SABER QUE USUARIOS HAN REGISTRADO SU ASISTENCIA
- */
-
- bot.onText(/^\/myasistencia/,async(msg)=>{
-
-    var chatId=msg.chat.id;
-    var myId = msg.from.id;
-
-    
-    const conteo =await Asistencias.findAll({
-        where:{
-            codigo:2027940527
-        }
-    });
-
-   
-    console.log(conteo);
-
-    
-    // const nuevoArreglo = asistencia.map(function(item){
-    //     const id = msg.from.id;
+        var chatId=msg.chat.id;
+        var myId = msg.from.id;
+        var fecha = msg.date;
       
-    //     if(item.myId===id){
-    //         const fecha = item.nuevaFecha.toString();
-    //         return `<b>ID</b>: <i>${item.myId}</i> \n <b>NOMBRE</b><i> ${item.nombre}</i> \n <b>ALIAS</b> : <i>${item.alias}</i> \n <b>FECHA </b>: <i>${fecha}</i> \n\n`;
-    //     }
+        var f = Moment.unix(fecha).format('YYYY-MM-DD');
+       
+
+       
+        const solicitudes =await Finalizadas.findAll({
+            where:{
+                estado:5,
+                fecha_operada:{
+                    [Op.between]:[f+' 00:00:00',f+' 23:59:59']
+                }
+            }
+        });
+
+        const mensaje=[];
+        const total = solicitudes.length;
+        const conteo =`<b>TOTAL SOLICITUDES FINALIZADAS :</b><i>${total}</i>\n Fecha : ${f}\n\n`;
+       
+        mensaje.push(conteo);
+        solicitudes.forEach(item=>{
+            let nombreTecnico ='';
+            if(item.id_tecnico==53){
+                nombreTecnico ='Josue vasquez';
+            }
+            if(item.id_tecnico==11){
+                nombreTecnico ='German Castro';
+            }
+
+
+
+            var d = Moment(item.fecha_operada).format('YYYY-MM-DD');
+       
+
+
+
+
+            c=`<b>Tecnico</b>:<i>${nombreTecnico}</i>\n<b>Solicitud No:</b><i>${item.id_solicitud}</i>\n<b>Fecha Operada:</b><i>${d}</i>\n<b>Tarea Realiza:</b><i>${item.accion}</i>\n\n`;
+            mensaje.push(c);
         
-    // })
-    // bot.sendMessage(chatId,nuevoArreglo.toString(),{parse_mode : "HTML"});
-
-});
-
-
-// bot.onText(/^\hola/,function(msg){
-//     console.log(msg);
-// })
-
-
-/**
- * NECESITO CREAR UN METODO PARA TRAER UNA IMAGEN DESDE EL GRUPO DE TELEGRAM
- */
-
- bot.on('message', (msg) => {
-    //console.log(msg);
-    if(msg.photo){
-
-       const codigo = msg.from.id;
-       const nombre = msg.from.first_name;
-       const alias = msg.from.username;
-       const mensaje = msg.caption;
-    
-        let foto = msg.photo[1].file_id;
-        const url=`https://api.telegram.org/bot5351040426:AAFGM1YN-SfAuQcgBMsz_tdrA-6p8OYQUuI/getFile?file_id=${foto}`;
-        https.get(url, res => {
-            let data = '';
-            res.on('data', chunk => {
-              data += chunk;
-            });
-            res.on('end', () => {
-              data = JSON.parse(data);
-              let pathFoto = data.result.file_path;
-              const urlPath = `https://api.telegram.org/file/bot5351040426:AAFGM1YN-SfAuQcgBMsz_tdrA-6p8OYQUuI/${pathFoto}`;
-
-           
-
-
-                /**
-                 * Agregamos la libreria downloads con npm install downloads para hacer la descarga de la imagen de telegram
-                 */
-              const filePath=`${__dirname}/downloads`;
-
-
-
-              download(urlPath,filePath)
-                .then(()=>{
-                    console.log("Descarga Completa");
-                })
-                
-
-                const filePath56=`${pathFoto}`;
-                const ruta = filePath56;
-               
-
-                Tareas.create({codigo,nombre,alias,mensaje,ruta})
-                    .then(()=>console.log('Insertado Correctamente!!'))
-                    .catch(error=>console.log(error));
-
-            
-            })
-        }).on('error', err => {
-            console.log(err.message);
-        })
+        });
+        bot.sendMessage(chatId,mensaje.toString(),{parse_mode : "HTML"});
+       
+        console.log(solicitudes.length);
         
-    }   
-    
-  
+        
+    });
 
-});
+
+
+
+
+
     
 }
 
