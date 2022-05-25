@@ -123,14 +123,9 @@ bot.onText(/^\/asistencia/,(msg)=>{
     };
 
     bot.sendMessage(chatId,"Marcar asistencia",botones);
-
    
     bot.on('callback_query',async function onCallbackQuery(accionboton){
         const data = accionboton.data;
-       
-        
-
-        
         
         if(data=='boton1'){
         
@@ -144,9 +139,6 @@ bot.onText(/^\/asistencia/,(msg)=>{
         await Asistencias.create({codigo,nombre,alias,fecha})
             .then(()=>console.log('Insertado Correctamente!!'))
             .catch(error=>console.log(error));
-
-        
-
             bot.answerCallbackQuery(accionboton.id, {text: 'Asistencia agregada correctamente', show_alert: true});
         }
        
@@ -154,7 +146,49 @@ bot.onText(/^\/asistencia/,(msg)=>{
 })
 
 
+/**
+ * METHODO PARA VALIDAR SOLICITUDES DE SOPORTE PARA MITIGAR EL NO ENVIO DE CORREOS
+ */
 
+
+
+ bot.onText(/^\//,(msg)=>{
+    var chatId=msg.chat.id;
+
+    
+    var botones = {
+        reply_markup:{
+            inline_keyboard:[
+                [
+                    {text:"Asistencia",callback_data:'boton1'}
+                    
+                ]
+            ]
+        }
+    };
+
+    bot.sendMessage(chatId,"Marcar asistencia",botones);
+   
+    bot.on('callback_query',async function onCallbackQuery(accionboton){
+        const data = accionboton.data;
+        
+        if(data=='boton1'){
+        
+        
+        let myId = accionboton.from.id;
+        const codigo = myId;
+        let nombre = accionboton.from.first_name;
+        let alias = accionboton.from.username;
+        let fecha = new Date();
+
+        await Asistencias.create({codigo,nombre,alias,fecha})
+            .then(()=>console.log('Insertado Correctamente!!'))
+            .catch(error=>console.log(error));
+            bot.answerCallbackQuery(accionboton.id, {text: 'Asistencia agregada correctamente', show_alert: true});
+        }
+       
+    })
+})
 
 
 
@@ -194,7 +228,7 @@ bot.onText(/^\/asistencia/,(msg)=>{
  * NECESITO CREAR UN METODO PARA TRAER UNA IMAGEN DESDE EL GRUPO DE TELEGRAM
  */
 
- bot.on('message', (msg) => {
+bot.on('message', (msg) => {
     //console.log(msg);
     if(msg.photo){
 

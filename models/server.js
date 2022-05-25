@@ -4,6 +4,7 @@ const cors = require('cors');
 const path = require('path');
 
 const { botTelegram } = require('./bot');
+const {botTelegramInformatica} = require('./botInformatica');
 const db = require('../config/db');
 // require('../models/asistencia');
 // require('../models/tareas');
@@ -11,6 +12,9 @@ const db = require('../config/db');
 
 
 require('../models/asignadas');
+require('../models/registros');
+require('../models/solicitud');
+require('../models/bitacoraSolicitudes');
 class Server{
     constructor(){
         this.app= express();
@@ -27,6 +31,7 @@ class Server{
     middlewares(){
         
         botTelegram();
+        botTelegramInformatica();
         db.sync()
             .then(()=>console.log('Conectado a la db'))
             .catch(error=>console.log(error));
