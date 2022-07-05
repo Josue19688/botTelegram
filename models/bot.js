@@ -471,88 +471,88 @@ bot.onText(/^\/asuntos/,async(msg)=>{
 
 
 
-bot.onText(/^\/seguridad/,async(msg)=>{
-    var chatId=msg.chat.id;
+// bot.onText(/^\/seguridad/,async(msg)=>{
+//     var chatId=msg.chat.id;
    
-    var f='';
-    const reg = [];
-    if(msg.text==='/seguridad'){
-        const total=await Solicitud.findAll(
-            {where:
-                {estado:7,autorizacion:1,id_division:10}
-            }
-        );
+//     var f='';
+//     const reg = [];
+//     if(msg.text==='/seguridad'){
+//         const total=await Solicitud.findAll(
+//             {where:
+//                 {estado:7,autorizacion:1,id_division:10}
+//             }
+//         );
         
-        if(total.length==0){
-            bot.sendMessage(chatId,"No hay solicitudes pendientes de autorizar..",botones);
-        }else{
-            total.forEach((item)=>{
-
-                reg.push(item.id_solicitud+'\n Descripción:'+item.descripcion);
+//         if(total.length==0){
+//             bot.sendMessage(chatId,"No hay solicitudes pendientes de autorizar..",botones);
+//         }else{
+//             total.forEach((item)=>{
+//                 let soli=`${item.id_solicitud}\nDescripción:${item.descripcion}\n`;
+//                 reg.push(soli);
             
-            });
-            f=`Total solicitudes de soporte Pendientes de autorizar\nNo.${reg}`;
+//             });
+//             f=`Total solicitudes de soporte Pendientes de autorizar\n\nNo.${reg}\n\n`;
 
-            var botones = {
-                reply_markup:{
-                    inline_keyboard:[
-                        [
-                            {text:"Validar Solicitud",callback_data:'boton1'},
-                            {text:"Denegar solicitud",callback_data:'boton2'}
-                        ]
-                    ]
-                }
-            };
+//             var botones = {
+//                 reply_markup:{
+//                     inline_keyboard:[
+//                         [
+//                             {text:"Validar Solicitud",callback_data:'boton1'},
+//                             {text:"Denegar solicitud",callback_data:'boton2'}
+//                         ]
+//                     ]
+//                 }
+//             };
 
-            bot.sendMessage(chatId,f,botones);
+//             bot.sendMessage(chatId,f,botones);
    
-            bot.on('callback_query',async function onCallbackQuery(accionboton){
-                const data = accionboton.data;
-                console.log(accionboton.from.id);
-                console.log(accionboton.from.first_name);
+//             bot.on('callback_query',async function onCallbackQuery(accionboton){
+//                 const data = accionboton.data;
+//                 console.log(accionboton.from.id);
+//                 console.log(accionboton.from.first_name);
                 
-                if(data=='boton1'){
+//                 if(data=='boton1'){
                 
                 
-                    let myId = accionboton.from.id;
+//                     let myId = accionboton.from.id;
                    
-                    let nombre = accionboton.from.first_name;
+//                     let nombre = accionboton.from.first_name;
                     
-                    let fecha = new Date();
+//                     let fecha = new Date();
 
-                    let datosUser = `TelegramUser :${myId},${nombre}`;
-                    reg.forEach((id)=>{
-                        let idSol =id;
-                        Solicitud.update(
-                            {
-                                autorizacion:2,
-                                estado:6
-                            },{
-                                where:{
-                                    id_solicitud:id
-                                }
-                            }
-                        ) .then(()=>console.log('Actualizado  Correctamente!!'))
-                            .catch(error=>console.log(error));
+//                     let datosUser = `TelegramUser :${myId},${nombre}`;
+//                     reg.forEach((id)=>{
+//                         let idSol =id;
+//                         Solicitud.update(
+//                             {
+//                                 autorizacion:2,
+//                                 estado:6
+//                             },{
+//                                 where:{
+//                                     id_solicitud:id
+//                                 }
+//                             }
+//                         ) .then(()=>console.log('Actualizado  Correctamente!!'))
+//                             .catch(error=>console.log(error));
 
 
-                        let action ='Autorizada';
-                        BitacoraSolicitud.create({id:null,id_solicitud:idSol,usuario:datosUser,fecha_cambio:fecha,accion:action})
-                                    .then(()=>console.log('Insertado Correctamente!!'))
-                                    .catch(error=>console.log(error));
-                        bot.answerCallbackQuery(accionboton.id, {text: 'Solicitud de soporte validada correctamente', show_alert: true});   
-                    });  
-                }
-            })
-        }
+//                         let action ='Autorizada';
+//                         BitacoraSolicitud.create({id:null,id_solicitud:idSol,usuario:datosUser,fecha_cambio:fecha,accion:action})
+//                                     .then(()=>console.log('Insertado Correctamente!!'))
+//                                     .catch(error=>console.log(error));
+//                         bot.answerCallbackQuery(accionboton.id, {text: 'Solicitud de soporte validada correctamente', show_alert: true});   
+//                     });  
+//                 }
+//             })
+//         }
 
-    }
+//     }
     
    
-
+    
   
    
-});
+// });
 
 
 ///seguridad
