@@ -22,7 +22,15 @@ const Tareas = db.define('tarea',{
     },
     ruta:{
         type:Sequelize.STRING
-    }
+    },
+    estado:{
+        type:Sequelize.INTEGER
+    },
+    created_at: {
+        type:Sequelize.DATE   
+    },
+},{
+    timestamps: false
 });
 
 module.exports=Tareas;

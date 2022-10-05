@@ -6,10 +6,6 @@ const path = require('path');
 const { botTelegram } = require('./bot');
 const {botTelegramInformatica} = require('./botInformatica');
 const db = require('../config/db');
-// require('../models/asistencia');
-// require('../models/tareas');
-// require('../models/solicitdes');
-
 
 require('../models/asignadas');
 require('../models/registros');
@@ -18,18 +14,13 @@ require('../models/bitacoraSolicitudes');
 class Server{
     constructor(){
         this.app= express();
-        this.port=3000;
-
-
+        this.port=9000;
         //middlewares
         this.middlewares();
-
         this.router();
-    
     }
 
     middlewares(){
-        
         botTelegram();
         botTelegramInformatica();
         db.sync()
@@ -45,7 +36,6 @@ class Server{
         this.app.use('/api/usuario',require('../routes/usuario.routes'));
     }
     
-      
     listen(){
         this.app.listen(this.port,()=>{
             console.log('Servidor corriendo en el puerto : ',this.port);

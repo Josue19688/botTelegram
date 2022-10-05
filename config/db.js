@@ -2,8 +2,8 @@
 const Sequelize = require('sequelize');
 
 
-const sequelize = new Sequelize('digici_full','rescobar','rescobar123',{
-    host:'192.168.0.29',
+const sequelize = new Sequelize('xxxx','xxxxx','xxxxxxx',{
+    host:'xxxxxxxxx',
     dialect:'mysql',
     port:'3306',
     operatorAliases:false,

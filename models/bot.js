@@ -6,6 +6,7 @@ const download = require('download');
 const {sequelize} = require('sequelize');
 const { Op } = require('sequelize');
 const Moment = require('moment');
+const nodemailer =require('nodemailer');
 
 
 const Asistencias = require('../models/asistencia');
@@ -19,7 +20,7 @@ const BitacoraSolicitud = require('../models/bitacoraSolicitudes');
 
 
 const botTelegram = async()=>{
-    const token = '5384108617:AAElxSzqHvuIZv2dfPnXUgcjWC8r5iDuzRA';
+    const token = 'xxxxxxxxxxx';
     const bot = new TelegramBot(token, {polling:true});
 
     console.log(bot);
@@ -38,7 +39,24 @@ const botTelegram = async()=>{
         console.log(error);
     });
 
-   
+
+    bot.onText(/^\/formato/, function(msg){
+        console.log(msg);
+        var chatId = msg.chat.id;
+        var nameUser = msg.from.first_name;
+        var alias = msg.from.username;
+        
+        bot.sendMessage(chatId, `
+        <b>Formato para envio de datos vales de combustible</b> :\n \n<b>Bienvenido : ${nameUser}</b>\n\n
+        <b>EJEMPLO FORMATO CORRECTO : </b>\n \n<b>Fecha, Hora, Piloto, Codigo, Acompañante, No. Comporbante, Placas, Nombre Gasolinera, Cantidad Abastecida, Cantidad de Cupones, Numero Cupones Q.50, Numero Cupones Q.100, Kilometraje, Precio por Galon, Total de Galones Abastecidos</b> `
+        ,{parse_mode : "HTML"});
+
+        setTimeout(()=>{
+            bot.sendMessage(chatId, `
+            <b>EJEMPLO ENVIO DE DATOS : </b>\n \n<b>2022-07-06, 16:20, Pablo Amilcar Yanez Castro, 200, Opcional, Fac-02154B, P-123DKG, PUMA Avenida las americas, 500, 6, 12345678 1234679, 987654320 987654321 987654322 987654323, 123456, 47.65, 12.56</b>\n \n Se devera adjuntar la foto del comprobante y en la descripción de la foto se agregaran los datos solicitados, realizarlo con forme al orden establecido de lo contrario sera un registro invalido. `
+            ,{parse_mode : "HTML"});
+        },1000);
+    });
 
    
    
@@ -96,7 +114,7 @@ const botTelegram = async()=>{
             nombreTecnico ='Jose Osoy';
         }
         if(item.id_tecnico==15){
-            nombreTecnico ='Fransisco Eriscastillo';
+            nombreTecnico ='Francisco Ericastilla';
         }
         if(item.id_tecnico==16){
             nombreTecnico ='Nelson Bamaca';
@@ -144,7 +162,7 @@ const botTelegram = async()=>{
             nombreTecnico ='Jose Osoy';
         }
         if(item2.id_tecnico==15){
-            nombreTecnico ='Fransisco Eriscastillo';
+            nombreTecnico ='Francisco Ericastilla';
         }
         if(item2.id_tecnico==16){
             nombreTecnico ='Nelson Bamaca';
@@ -192,7 +210,7 @@ const botTelegram = async()=>{
             nombreTecnico ='Jose Osoy';
         }
         if(item3.id_tecnico==15){
-            nombreTecnico ='Fransisco Eriscastillo';
+            nombreTecnico ='Francisco Ericastilla';
         }
         if(item3.id_tecnico==16){
             nombreTecnico ='Nelson Bamaca';
@@ -471,88 +489,88 @@ bot.onText(/^\/asuntos/,async(msg)=>{
 
 
 
-// bot.onText(/^\/seguridad/,async(msg)=>{
-//     var chatId=msg.chat.id;
+bot.onText(/^\/informatica/,async(msg)=>{
+    console.log(msg);
+    var chatId=msg.chat.id;
    
-//     var f='';
-//     const reg = [];
-//     if(msg.text==='/seguridad'){
-//         const total=await Solicitud.findAll(
-//             {where:
-//                 {estado:7,autorizacion:1,id_division:10}
-//             }
-//         );
+    var f='';
+    const reg = [];
+    if(msg.text==='/informatica'){
+        const total=await Solicitud.findAll(
+            {where:
+                {estado:7,autorizacion:1,id_division:11}
+            }
+        );
         
-//         if(total.length==0){
-//             bot.sendMessage(chatId,"No hay solicitudes pendientes de autorizar..",botones);
-//         }else{
-//             total.forEach((item)=>{
-//                 let soli=`${item.id_solicitud}\nDescripción:${item.descripcion}\n`;
-//                 reg.push(soli);
+        if(total.length==0){
+            bot.sendMessage(chatId,"No hay solicitudes pendientes de autorizar..",botones);
+        }else{
+            total.forEach((item)=>{
+                let soli=`${item.id_solicitud}\nDescripción:${item.descripcion}\n`;
+                reg.push(soli);
             
-//             });
-//             f=`Total solicitudes de soporte Pendientes de autorizar\n\nNo.${reg}\n\n`;
+            });
+            f=`Total solicitudes de soporte Pendientes de autorizar\n\nNo.${reg}\n\n`;
 
-//             var botones = {
-//                 reply_markup:{
-//                     inline_keyboard:[
-//                         [
-//                             {text:"Validar Solicitud",callback_data:'boton1'},
-//                             {text:"Denegar solicitud",callback_data:'boton2'}
-//                         ]
-//                     ]
-//                 }
-//             };
+            var botones = {
+                reply_markup:{
+                    inline_keyboard:[
+                        [
+                            {text:"Validar Solicitud",callback_data:'boton1'},
+                            {text:"Denegar solicitud",callback_data:'boton2'}
+                        ]
+                    ]
+                }
+            };
 
-//             bot.sendMessage(chatId,f,botones);
+            bot.sendMessage(chatId,f,botones);
    
-//             bot.on('callback_query',async function onCallbackQuery(accionboton){
-//                 const data = accionboton.data;
-//                 console.log(accionboton.from.id);
-//                 console.log(accionboton.from.first_name);
+            bot.on('callback_query',async function onCallbackQuery(accionboton){
+                const data = accionboton.data;
+                console.log(accionboton.from.id);
+                console.log(accionboton.from.first_name);
                 
-//                 if(data=='boton1'){
+                if(data=='boton1'){
                 
                 
-//                     let myId = accionboton.from.id;
+                    let myId = accionboton.from.id;
                    
-//                     let nombre = accionboton.from.first_name;
+                    let nombre = accionboton.from.first_name;
                     
-//                     let fecha = new Date();
+                    let fecha = new Date();
 
-//                     let datosUser = `TelegramUser :${myId},${nombre}`;
-//                     reg.forEach((id)=>{
-//                         let idSol =id;
-//                         Solicitud.update(
-//                             {
-//                                 autorizacion:2,
-//                                 estado:6
-//                             },{
-//                                 where:{
-//                                     id_solicitud:id
-//                                 }
-//                             }
-//                         ) .then(()=>console.log('Actualizado  Correctamente!!'))
-//                             .catch(error=>console.log(error));
+                    let datosUser = `TelegramUser :${myId},${nombre}`;
+                    reg.forEach((id)=>{
+                        let idSol =id;
+                        Solicitud.update(
+                            {
+                                autorizacion:2,
+                                estado:6
+                            },{
+                                where:{
+                                    id_solicitud:id
+                                }
+                            }
+                        ) .then(()=>console.log('Actualizado  Correctamente!!'))
+                            .catch(error=>console.log(error));
 
 
-//                         let action ='Autorizada';
-//                         BitacoraSolicitud.create({id:null,id_solicitud:idSol,usuario:datosUser,fecha_cambio:fecha,accion:action})
-//                                     .then(()=>console.log('Insertado Correctamente!!'))
-//                                     .catch(error=>console.log(error));
-//                         bot.answerCallbackQuery(accionboton.id, {text: 'Solicitud de soporte validada correctamente', show_alert: true});   
-//                     });  
-//                 }
-//             })
-//         }
+                        let action ='Autorizada';
+                        BitacoraSolicitud.create({id:null,id_solicitud:idSol,usuario:datosUser,fecha_cambio:fecha,accion:action})
+                                    .then(()=>console.log('Insertado Correctamente!!'))
+                                    .catch(error=>console.log(error));
+                        bot.answerCallbackQuery(accionboton.id, {text: 'Solicitud de soporte validada correctamente', show_alert: true});   
+                    });  
+                }
+            })
+        }
 
-//     }
+    }
     
    
     
   
-   
-// });
+ });
 
 
 ///seguridad
@@ -636,7 +654,7 @@ bot.onText(/^\/asuntos/,async(msg)=>{
  */
 
  bot.on('message', (msg) => {
-    //console.log(msg);
+    // console.log(msg);
     if(msg.photo){
 
        const codigo = msg.from.id;
@@ -663,7 +681,9 @@ bot.onText(/^\/asuntos/,async(msg)=>{
                 /**
                  * Agregamos la libreria downloads con npm install downloads para hacer la descarga de la imagen de telegram
                  */
-              const filePath=`${__dirname}/downloads`;
+                 const token = generateToken(5);
+              const filePath=`${__dirname}/downloads/`;
+              //const filePath=`http://192.168.0.72/digici_full/admin/seguridad/fotovales/`;
 
 
 
@@ -672,14 +692,485 @@ bot.onText(/^\/asuntos/,async(msg)=>{
                     console.log("Descarga Completa");
                 })
                 
+               
 
                 const filePath56=`${pathFoto}`;
                 const ruta = filePath56;
-               
+                const estado =1;
 
-                Tareas.create({codigo,nombre,alias,mensaje,ruta})
+                console.log(mensaje);
+                
+
+                Tareas.create({codigo,nombre,alias,mensaje,ruta,estado})
                     .then(()=>console.log('Insertado Correctamente!!'))
                     .catch(error=>console.log(error));
+
+
+                //ENVIAR FOTO POR CORREO ELECTRONICO
+
+                //la url proveniente de telegram trae lo siguiente photos/file_21.jpg
+                //por lo que con el metodo slice eliminamos la palabra photos/ y asi poder
+                //enviar la foto como archivo adjunto por correo 
+                const foto = pathFoto.slice(7)
+                
+                /*Haremos el tratamiento del mensaje para enviarlo atravez del correo */
+
+//const mensaje =`2022-07-06, 16:20, Pablo Amilcar Yanez Castro, 200, N/A, Fac-02154B, P-123DKG, PUMA Avenida las americas, 500, 6, 12345678 1234679, 987654320 987654321 987654322 987654323, 123456, 47.65, 12.56`;
+                //let nuevo = mensaje.replace(/ /g, "")
+                //const arraymensaje = mensaje.split(',');
+                // let hora = arraymensaje[1].replace(/ /g, "")
+
+                const sender = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                      user: 'advinjosuev899@gmail.com',
+                      pass: 'svouflvocspcwihk'
+                    }
+                });
+
+                const arraymensaje = mensaje.split(',');
+                let Fecha=arraymensaje[0];
+                let Hora=arraymensaje[1];
+                let Nombre=arraymensaje[2];
+                let codigon=arraymensaje[3];
+                let Acompañante=arraymensaje[4];
+                let Comprobante=arraymensaje[5];
+                let Placa=arraymensaje[6];
+                let Gasoliera=arraymensaje[7];
+                let cantidada=arraymensaje[8];
+                let cantidadv=arraymensaje[9];
+                let Vales50=arraymensaje[10];
+                let Vales100=arraymensaje[11];
+                let km=arraymensaje[12];
+                let preciog=arraymensaje[13];
+                let totalabastecido=arraymensaje[14];
+
+
+                let enviarfoto =`${__dirname}/downloads/${foto}`
+
+                const mail = {
+                    from: "sistemab@sistemab.com",
+                    to: "ajvasquez@digici.gob.gt",
+                    subject:`Abastecimiento de Combustible ${Comprobante}`,
+                    html: `
+                    <!DOCTYPE html>
+                    <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
+                    
+                    <head>
+                        <title></title>
+                        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <!--[if mso]><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch><o:AllowPNG/></o:OfficeDocumentSettings></xml><![endif]-->
+                        <!--[if !mso]><!-->
+                        <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
+                        <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet" type="text/css">
+                        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet" type="text/css">
+                        <!--<![endif]-->
+                        <style>
+                            * {
+                                box-sizing: border-box;
+                            }
+                    
+                            body {
+                                margin: 0;
+                                padding: 0;
+                            }
+                    
+                            a[x-apple-data-detectors] {
+                                color: inherit !important;
+                                text-decoration: inherit !important;
+                            }
+                    
+                            #MessageViewBody a {
+                                color: inherit;
+                                text-decoration: none;
+                            }
+                    
+                            p {
+                                line-height: inherit
+                            }
+                    
+                            .desktop_hide,
+                            .desktop_hide table {
+                                mso-hide: all;
+                                display: none;
+                                max-height: 0px;
+                                overflow: hidden;
+                            }
+                    
+                            @media (max-width:700px) {
+                                .row-content {
+                                    width: 100% !important;
+                                }
+                    
+                                .mobile_hide {
+                                    display: none;
+                                }
+                    
+                                .stack .column {
+                                    width: 100%;
+                                    display: block;
+                                }
+                    
+                                .mobile_hide {
+                                    min-height: 0;
+                                    max-height: 0;
+                                    max-width: 0;
+                                    overflow: hidden;
+                                    font-size: 0px;
+                                }
+                    
+                                .desktop_hide,
+                                .desktop_hide table {
+                                    display: table !important;
+                                    max-height: none !important;
+                                }
+                            }
+                        </style>
+                    </head>
+                    
+                    <body style="background-color: #FFFFFF; margin: 0; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
+                        <table class="nl-container" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #FFFFFF;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <table class="row row-1" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff;">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; background-position: center top; color: #000000; width: 680px;" width="680">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 0px; padding-bottom: 0px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
+                                                                        <table class="text_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                                                            <tr>
+                                                                                <td class="pad" style="padding-bottom:5px;padding-left:20px;padding-right:10px;padding-top:55px;">
+                                                                                    <div style="font-family: sans-serif">
+                                                                                        <div class="txtTinyMce-wrapper" style="font-size: 12px; mso-line-height-alt: 14.399999999999999px; color: #3fb9bc; line-height: 1.2; font-family: Oswald, Arial, Helvetica Neue, Helvetica, sans-serif;">
+                                                                                            <p style="margin: 0; font-size: 14px; text-align: center;"><span style="font-size:50px;color:#030050;"><strong>Control de Combustible</strong></span></p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                        <table class="text_block block-2" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                                                            <tr>
+                                                                                <td class="pad" style="padding-bottom:30px;padding-left:15px;padding-right:15px;padding-top:15px;">
+                                                                                    <div style="font-family: Arial, sans-serif">
+                                                                                        <div class="txtTinyMce-wrapper" style="font-size: 12px; mso-line-height-alt: 18px; color: #555555; line-height: 1.5; font-family: 'Roboto Slab', Arial, 'Helvetica Neue', Helvetica, sans-serif;">
+                                                                                            <p style="margin: 0; font-size: 12px; mso-line-height-alt: 18px;">&nbsp;</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <table class="row row-2" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 680px;" width="680">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td class="column column-1" width="33.333333333333336%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
+                                                                        <table class="image_block block-2" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                                                                            <tr>
+                                                                                <td class="pad" style="width:100%;padding-right:0px;padding-left:0px;padding-top:5px;padding-bottom:5px;">
+                                                                                    <div class="alignment" align="center" style="line-height:10px"><img src="${urlPath}" style="display: block; height: auto; border: 0; width: 227px; max-width: 100%;" width="227" alt="I'm an image" title="I'm an image"></div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </td>
+                                                                    <td class="column column-2" width="66.66666666666667%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
+                                                                        <table class="text_block block-2" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                                                            <tr>
+                                                                                <td class="pad" style="padding-top:15px;padding-right:10px;padding-bottom:10px;padding-left:10px;">
+                                                                                    <div style="font-family: sans-serif">
+                                                                                        <div class="txtTinyMce-wrapper" style="font-size: 12px; font-family: Oswald, Arial, Helvetica Neue, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+                                                                                            <ul style="line-height: 1.2; mso-line-height-alt: 14.399999999999999px; font-size: 14px;">
+                                                                                                <li style="text-align: left;"><strong>Nombre cuenta telegram :</strong>${nombre}</li>
+                                                                                                <li style="text-align: left;"><span style="font-size:14px;"><strong>Código</strong></span><strong style="font-family:inherit;font-family:inherit;font-size:14px;"> telegram :</strong>  ${codigo}</li>
+                                                                                                <li style="text-align: left;"><strong>Fecha abastecimiento : </strong>${Fecha}</li>
+                                                                                                <li style="text-align: left;"><strong>Hora abastecimiento :&nbsp;${Hora}</strong></li>
+                                                                                                <li style="text-align: left;"><strong>Nombre : </strong> ${Nombre}</li>
+                                                                                                <li style="text-align: left;"><span style="font-size:14px;"><strong>Código</strong></span><strong style="font-family:inherit;font-family:inherit;font-size:14px;"> : </strong>${codigon}</li>
+                                                                                                <li style="text-align: left;"><strong>Acompañante :</strong> ${Acompañante}</li>
+                                                                                                <li style="text-align: left;"><strong>Comprobante :</strong> ${Comprobante}</li>
+                                                                                                <li style="text-align: left;"><strong>Placa :&nbsp;</strong> ${Placa}</li>
+                                                                                                <li style="text-align: left;"><strong>Gasolinera :</strong>  ${Gasoliera}</li>
+                                                                                                <li style="text-align: left;"><strong>Cantidad abastecida :</strong> ${cantidada}</li>
+                                                                                                <li style="text-align: left;"><strong>Cantidad vales :</strong> ${cantidadv}</li>
+                                                                                                <li style="text-align: left;"><strong>Vales Q.50 :&nbsp;</strong>${Vales50}</li>
+                                                                                                <li style="text-align: left;"><strong>Vales Q.100 :&nbsp;</strong>${Vales100}</li>
+                                                                                                <li style="text-align: left;"><strong>Kilometraje : </strong>${km}</li>
+                                                                                                <li style="text-align: left;"><strong style="font-family:inherit;font-family:inherit;font-size:14px;">Precio por </strong><span style="font-size:14px;"><strong>galón</strong></span><strong style="font-family:inherit;font-family:inherit;font-size:14px;"> :</strong>${preciog}</li>
+                                                                                                <li style="text-align: left;"><strong>Cantidad Galones : </strong>${totalabastecido}</li>
+                                                                                            </ul>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                        <table class="divider_block block-3" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                                                                            <tr>
+                                                                                <td class="pad" style="padding-top:10px;padding-right:10px;padding-bottom:15px;padding-left:10px;">
+                                                                                    <div class="alignment" align="center">
+                                                                                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                                                                                            <tr>
+                                                                                                <td class="divider_inner" style="font-size: 1px; line-height: 1px; border-top: 1px solid #BBBBBB;"><span>&#8202;</span></td>
+                                                                                            </tr>
+                                                                                        </table>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <table class="row row-3" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 680px;" width="680">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 35px; padding-bottom: 15px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
+                                                                        <table class="button_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                                                                            <tr>
+                                                                                <td class="pad" style="padding-bottom:20px;padding-left:10px;padding-right:10px;padding-top:10px;text-align:center;">
+                                                                                    <div class="alignment" align="center">
+                                                                                        <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="https://192.168.0.72/digici_full/admin/seguridad/combustibleseguridad.php" style="height:64px;width:328px;v-text-anchor:middle;" arcsize="55%" stroke="false" fillcolor="#000000"><w:anchorlock/><v:textbox inset="0px,0px,0px,0px"><center style="color:#ffffff; font-family:Arial, sans-serif; font-size:22px"><![endif]-->
+                                                                                        <a href="https://192.168.0.72/digici_full/admin/seguridad/combustibleseguridad.php" target="_blank" style="text-decoration:none;display:inline-block;color:#ffffff;background-color:#000000;border-radius:35px;width:auto;border-top:0px solid #2F7D81;font-weight:400;border-right:0px solid #2F7D81;border-bottom:0px solid #2F7D81;border-left:0px solid #2F7D81;padding-top:10px;padding-bottom:10px;font-family:Oswald, Arial, Helvetica Neue, Helvetica, sans-serif;text-align:center;mso-border-alt:none;word-break:keep-all;">
+                                                                                            <span style="padding-left:45px;padding-right:45px;font-size:22px;display:inline-block;letter-spacing:normal;">
+                                                                                            <span dir="ltr" style="word-break: break-word;">
+                                                                                            <span style="line-height: 44px;" dir="ltr" data-mce-style>VERIFICAR REGISTRO</span></span></span></a>
+                                                                                        <!--[if mso]></center></v:textbox></v:roundrect><![endif]-->
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                        <table class="text_block block-2" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                                                            <tr>
+                                                                                <td class="pad">
+                                                                                    <div style="font-family: sans-serif">
+                                                                                        <div class="txtTinyMce-wrapper" style="font-size: 12px; mso-line-height-alt: 14.399999999999999px; color: #3fb9bc; line-height: 1.2; font-family: Oswald, Arial, Helvetica Neue, Helvetica, sans-serif;">
+                                                                                            <p style="margin: 0; font-size: 14px; text-align: center;"><span style="font-size:34px;"><span style="color:#030050;"><strong style="font-size:34px;">Desarrollo, </strong><span style="font-size:34px;"><strong>Informática</strong></span></span></span></p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <table class="row row-4" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 680px;" width="680">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td class="column column-1" width="33.333333333333336%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
+                                                                        <table class="image_block block-2" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                                                                            <tr>
+                                                                                <td class="pad" style="width:100%;padding-right:0px;padding-left:0px;padding-top:5px;">
+                                                                                    <div class="alignment" align="center" style="line-height:10px"><img src="https://d1oco4z2z1fhwp.cloudfront.net/templates/default/1741/company.png" style="display: block; height: auto; border: 0; width: 64px; max-width: 100%;" width="64" alt="Alternate text" title="Alternate text"></div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                        <table class="text_block block-3" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                                                            <tr>
+                                                                                <td class="pad" style="padding-bottom:10px;padding-left:10px;padding-right:10px;padding-top:20px;">
+                                                                                    <div style="font-family: sans-serif">
+                                                                                        <div class="txtTinyMce-wrapper" style="font-size: 12px; mso-line-height-alt: 14.399999999999999px; color: #232132; line-height: 1.2; font-family: Oswald, Arial, Helvetica Neue, Helvetica, sans-serif;">
+                                                                                            <p style="margin: 0; font-size: 14px; text-align: center;"><span style="font-size:18px;"><strong>LOREM IPSUM</strong></span></p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                        <table class="text_block block-4" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                                                            <tr>
+                                                                                <td class="pad" style="padding-bottom:15px;padding-left:10px;padding-right:10px;">
+                                                                                    <div style="font-family: Arial, sans-serif">
+                                                                                        <div class="txtTinyMce-wrapper" style="font-size: 12px; font-family: 'Roboto Slab', Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-line-height-alt: 18px; color: #808080; line-height: 1.5;">
+                                                                                            <p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 21px;"><span style="font-size:14px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer dui magna, convallis</span></p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </td>
+                                                                    <td class="column column-2" width="33.333333333333336%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
+                                                                        <table class="image_block block-2" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                                                                            <tr>
+                                                                                <td class="pad" style="width:100%;padding-right:0px;padding-left:0px;padding-top:5px;">
+                                                                                    <div class="alignment" align="center" style="line-height:10px"><img src="https://d1oco4z2z1fhwp.cloudfront.net/templates/default/1741/work.png" style="display: block; height: auto; border: 0; width: 64px; max-width: 100%;" width="64" alt="Alternate text" title="Alternate text"></div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                        <table class="text_block block-3" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                                                            <tr>
+                                                                                <td class="pad" style="padding-bottom:10px;padding-left:10px;padding-right:10px;padding-top:20px;">
+                                                                                    <div style="font-family: sans-serif">
+                                                                                        <div class="txtTinyMce-wrapper" style="font-size: 12px; mso-line-height-alt: 14.399999999999999px; color: #232132; line-height: 1.2; font-family: Oswald, Arial, Helvetica Neue, Helvetica, sans-serif;">
+                                                                                            <p style="margin: 0; font-size: 14px; text-align: center;"><span style="font-size:18px;"><strong>DOLOR SIT AMET</strong></span></p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                        <table class="text_block block-4" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                                                            <tr>
+                                                                                <td class="pad" style="padding-bottom:15px;padding-left:10px;padding-right:10px;">
+                                                                                    <div style="font-family: Arial, sans-serif">
+                                                                                        <div class="txtTinyMce-wrapper" style="font-size: 12px; font-family: 'Roboto Slab', Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-line-height-alt: 18px; color: #808080; line-height: 1.5;">
+                                                                                            <p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 21px;"><span style="font-size:14px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer dui magna, convallis</span></p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </td>
+                                                                    <td class="column column-3" width="33.333333333333336%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
+                                                                        <table class="image_block block-2" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                                                                            <tr>
+                                                                                <td class="pad" style="width:100%;padding-right:0px;padding-left:0px;padding-top:5px;">
+                                                                                    <div class="alignment" align="center" style="line-height:10px"><img src="https://d1oco4z2z1fhwp.cloudfront.net/templates/default/1741/solution.png" style="display: block; height: auto; border: 0; width: 64px; max-width: 100%;" width="64" alt="Alternate text" title="Alternate text"></div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                        <table class="text_block block-3" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                                                            <tr>
+                                                                                <td class="pad" style="padding-bottom:10px;padding-left:10px;padding-right:10px;padding-top:20px;">
+                                                                                    <div style="font-family: sans-serif">
+                                                                                        <div class="txtTinyMce-wrapper" style="font-size: 12px; mso-line-height-alt: 14.399999999999999px; color: #232132; line-height: 1.2; font-family: Oswald, Arial, Helvetica Neue, Helvetica, sans-serif;">
+                                                                                            <p style="margin: 0; font-size: 14px; text-align: center;"><span style="font-size:18px;"><strong>INTEGER MAGNA</strong></span></p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                        <table class="text_block block-4" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                                                            <tr>
+                                                                                <td class="pad" style="padding-bottom:15px;padding-left:10px;padding-right:10px;">
+                                                                                    <div style="font-family: Arial, sans-serif">
+                                                                                        <div class="txtTinyMce-wrapper" style="font-size: 12px; font-family: 'Roboto Slab', Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-line-height-alt: 18px; color: #808080; line-height: 1.5;">
+                                                                                            <p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 21px;"><span style="font-size:14px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer dui magna, convallis</span></p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <table class="row row-5" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 680px;" width="680">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 5px; padding-bottom: 5px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
+                                                                        <div class="spacer_block" style="height:25px;line-height:25px;font-size:1px;">&#8202;</div>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <table class="row row-6" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 680px;" width="680">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 0px; padding-bottom: 30px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
+                                                                        <table class="divider_block block-1" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                                                                            <tr>
+                                                                                <td class="pad">
+                                                                                    <div class="alignment" align="center">
+                                                                                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                                                                                            <tr>
+                                                                                                <td class="divider_inner" style="font-size: 1px; line-height: 1px; border-top: 1px solid #E0E0E0;"><span>&#8202;</span></td>
+                                                                                            </tr>
+                                                                                        </table>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                        <table class="text_block block-2" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                                                            <tr>
+                                                                                <td class="pad">
+                                                                                    <div style="font-family: Arial, sans-serif">
+                                                                                        <div class="txtTinyMce-wrapper" style="font-size: 12px; font-family: 'Roboto Slab', Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-line-height-alt: 18px; color: #a6a4a2; line-height: 1.5;">
+                                                                                            <p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 18px;"><span style="font-size:12px;">This message was sent to <a style="text-decoration: none; color: #a6a4a2;" title="email@example.com" href="mailto:email@example.com">email@example.com</a></span></p>
+                                                                                            <p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 18px;"><span style="font-size:12px;">If you no longer wish to receive e-mails from us, <u><a style="text-decoration: none; color: #a6a4a2;" href="http://www.example.com/" target="_blank" rel="noopener">unsubscribe</a></u></span></p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table><!-- End -->
+                    </body>
+                    
+                    </html>
+                        `,
+                        attachments: [
+                            {
+                                filename: `${Comprobante}_${foto}`,
+                                path: __dirname + '/downloads/'+foto,
+                                cid: `${Comprobante}${foto}`
+                            }
+                        ]
+                };
+
+
+
+                sender.sendMail(mail, function(error, info) {
+                    if (error) {
+                      console.log(error);
+                    } else {
+                      console.log("Correo enviado satisfactoriamente: "+ info.response);
+                    }
+                });
 
             
             })
@@ -693,7 +1184,10 @@ bot.onText(/^\/asuntos/,async(msg)=>{
 
 });
 
-
+function generateToken(length){
+    let rand=()=>Math.random().toString(36).substr(2);
+    return (rand()+rand()+rand()+rand()).substr(0,length)
+}
     
 }
 

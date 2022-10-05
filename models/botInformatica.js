@@ -16,7 +16,7 @@ const Registros = require('../models/registros');
 const Solicitud = require('../models/solicitud');
 
 const botTelegramInformatica = async()=>{
-    const token = '5351040426:AAFGM1YN-SfAuQcgBMsz_tdrA-6p8OYQUuI';
+    const token = 'xxxxxx';
     const bot = new TelegramBot(token, {polling:true});
 
     
@@ -85,6 +85,9 @@ const botTelegramInformatica = async()=>{
             if(item.id_tecnico==80){
                 nombreTecnico ='David Santos';
             }
+            if(item.id_tecnico==291){
+                nombreTecnico ='Jaime Ramirez';
+            }
             if(item.id_tecnico==6){
                 nombreTecnico ='Jose Osoy';
             }
@@ -133,6 +136,9 @@ const botTelegramInformatica = async()=>{
             if(item2.id_tecnico==80){
                 nombreTecnico ='David Santos';
             }
+            if(item2.id_tecnico==291){
+                nombreTecnico ='Jaime Ramirez';
+            }
             if(item2.id_tecnico==6){
                 nombreTecnico ='Jose Osoy';
             }
@@ -180,6 +186,9 @@ const botTelegramInformatica = async()=>{
             }
             if(item3.id_tecnico==80){
                 nombreTecnico ='David Santos';
+            }
+            if(item3.id_tecnico==291){
+                nombreTecnico ='Jaime Ramirez';
             }
             if(item3.id_tecnico==6){
                 nombreTecnico ='Jose Osoy';
